@@ -1,3 +1,5 @@
+from copy import copy
+
 import numpy as np
 import random
 
@@ -8,16 +10,9 @@ class DemoEvolutionaryAlgorithm(EvolutionaryAlgorithm):
     def __init__(self, config=None):
         super().__init__(config)
 
-    @staticmethod
-    def __individual_fitness(individual: np.array) -> np.array:
-        # TODO: implement individual fitness
-        return random.randint(0, 100) if individual else random.randint(0, 100)
-
-    def _fitness(self) -> np.array:
-        self.fitness = np.array([self.__individual_fitness(individual) for individual in self.generation])
-
     def _selection(self):
-        self.parents = super().roulette_wheel_selection()
+        self.parents = super().roulette_wheel_selection(
+            self.population, self.fitness, self.config["number_of_parents"])
 
     def _crossover(self):
         number_of_offsprings = self.config["number_of_offsprings"]
@@ -33,4 +28,14 @@ class DemoEvolutionaryAlgorithm(EvolutionaryAlgorithm):
             self.offsprings[offspring_index][crossover_point:] = second_parent[crossover_point:]
 
     def _mutation(self):
-        self.mutants = self.offsprings
+        mutants = []
+
+        for offspring in self.offsprings:
+            mutant = copy(offspring)
+            for genome_index in range(mutant.size):
+                if np.random.uniform(0, 1) <= self.config["mutation_chance"]:
+                    mutant[genome_index] = offspring[genome_index] + np.random.normal(-1, 1)
+
+            mutants.append(mutant)
+
+        self.mutants = np.array(mutants)

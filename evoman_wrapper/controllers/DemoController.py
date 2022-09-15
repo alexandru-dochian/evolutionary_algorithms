@@ -9,9 +9,9 @@ def sigmoid_activation(x):
 
 # implements controller structure for player
 class DemoController(Controller):
-    def __init__(self, _n_hidden):
+    def __init__(self, n_hidden):
         # Number of hidden neurons
-        self.n_hidden = [_n_hidden]
+        self.n_hidden = [n_hidden]
 
     def control(self, inputs, controller):
         # Normalises the input using min-max scaling
