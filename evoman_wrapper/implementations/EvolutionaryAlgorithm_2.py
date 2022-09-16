@@ -6,7 +6,7 @@ import random
 from evoman_wrapper.interfaces.EvolutionaryAlgorithm import EvolutionaryAlgorithm
 
 
-class EvolutionaryAlgorithmFirstImplementation(EvolutionaryAlgorithm):
+class EvolutionaryAlgorithm_2(EvolutionaryAlgorithm):
     def __init__(self, config=None):
         super().__init__(config)
 

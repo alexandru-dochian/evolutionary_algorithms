@@ -43,6 +43,7 @@ class EvolutionaryAlgorithm(ABC):
             (self.config["population_size"], self.config["number_of_genomes"]))
         self.fitness = np.zeros(self.config["population_size"])
         self.best_individual = random.choice(self.population)
+        self.best_individual_fitness = 0
         self.offsprings = np.array([])
         self.mutants = np.array([])
 
@@ -70,6 +71,7 @@ class EvolutionaryAlgorithm(ABC):
     """
 
     def update_fitness(self, fitness: np.array):
+        # TODO: Normalize fitness instead of just making the negatives 0
         self.fitness = np.vectorize(lambda x: 0 if x < 0 else x)(fitness)
 
     def next_generation(self):
@@ -86,13 +88,13 @@ class EvolutionaryAlgorithm(ABC):
         return self.current_generation_number > self.config["max_generations"]
 
     def get_generation_description(self):
-        return str({
-            "current_generation_number": self.current_generation_number,
+        return {
+            "current_generation_number": self.current_generation_number - 1,
             "best_individual": self.best_individual.tolist(),
             "best_individual_fitness": self.best_individual_fitness,
             "fitness_max_history": self.fitness_max_history,
             "fitness_mean_history": self.fitness_mean_history
-        })
+        }
 
     """
         Private
