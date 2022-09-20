@@ -1,19 +1,18 @@
 import numpy as np
 
-from evoman.controller import Controller
+from evoman_wrapper.interfaces.Controller import Controller
 
 
 def sigmoid_activation(x):
     return 1. / (1. + np.exp(-x))
 
 
-# implements controller structure for player
-class NeuralNetworkController(Controller):
+class NNController(Controller):
     def __init__(self, n_hidden):
         # Number of hidden neurons
         self.n_hidden = [n_hidden]
 
-    def control(self, inputs, controller):
+    def control(self, inputs: list, individual: np.array):
         # Normalises the input using min-max scaling
         inputs = (inputs - min(inputs)) / float((max(inputs) - min(inputs)))
 
@@ -21,23 +20,23 @@ class NeuralNetworkController(Controller):
             # Preparing the weights and biases from the controller of layer 1
 
             # Biases for the n hidden neurons
-            bias1 = controller[:self.n_hidden[0]].reshape(1, self.n_hidden[0])
+            bias1 = individual[:self.n_hidden[0]].reshape(1, self.n_hidden[0])
             # Weights for the connections from the inputs to the hidden nodes
             weights1_slice = len(inputs) * self.n_hidden[0] + self.n_hidden[0]
-            weights1 = controller[self.n_hidden[0]:weights1_slice].reshape((len(inputs), self.n_hidden[0]))
+            weights1 = individual[self.n_hidden[0]:weights1_slice].reshape((len(inputs), self.n_hidden[0]))
 
             # Outputs activation first layer.
             output1 = sigmoid_activation(inputs.dot(weights1) + bias1)
 
             # Preparing the weights and biases from the controller of layer 2
-            bias2 = controller[weights1_slice:weights1_slice + 5].reshape(1, 5)
-            weights2 = controller[weights1_slice + 5:].reshape((self.n_hidden[0], 5))
+            bias2 = individual[weights1_slice:weights1_slice + 5].reshape(1, 5)
+            weights2 = individual[weights1_slice + 5:].reshape((self.n_hidden[0], 5))
 
             # Outputting activated second layer. Each entry in the output is an action
             output = sigmoid_activation(output1.dot(weights2) + bias2)[0]
         else:
-            bias = controller[:5].reshape(1, 5)
-            weights = controller[5:].reshape((len(inputs), 5))
+            bias = individual[:5].reshape(1, 5)
+            weights = individual[5:].reshape((len(inputs), 5))
 
             output = sigmoid_activation(inputs.dot(weights) + bias)[0]
 
