@@ -19,7 +19,7 @@ class EvolutionaryAlgorithm_2(EvolutionaryAlgorithm):
         number_of_parents, number_of_chromosomes = self.parents.shape
         self.offsprings = np.zeros((number_of_offsprings, number_of_chromosomes))
 
-        crossover_point = int(number_of_parents / 2)
+        crossover_point = int(number_of_parents / 3)
 
         for offspring_index in range(number_of_offsprings):
             first_parent = random.choice(self.parents)
@@ -39,3 +39,4 @@ class EvolutionaryAlgorithm_2(EvolutionaryAlgorithm):
             mutants.append(mutant)
 
         self.mutants = np.array(mutants)
+
