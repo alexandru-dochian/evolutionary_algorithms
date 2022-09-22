@@ -19,13 +19,16 @@ class EvolutionaryAlgorithm_4(EvolutionaryAlgorithm):
         number_of_parents, number_of_chromosomes = self.parents.shape
         self.offsprings = np.zeros((number_of_offsprings, number_of_chromosomes))
 
-        crossover_point = int(number_of_parents / 2)
+        crossover_point1 = int(number_of_parents / 3)
+        crossover_point2 = int(number_of_parents / 2)
 
         for offspring_index in range(number_of_offsprings):
             first_parent = random.choice(self.parents)
             second_parent = random.choice(self.parents)
-            self.offsprings[offspring_index][0:crossover_point] = first_parent[0:crossover_point]
-            self.offsprings[offspring_index][crossover_point:] = second_parent[crossover_point:]
+            third_parent = random.choice(self.parents)
+            self.offsprings[offspring_index][0:crossover_point1] = first_parent[0:crossover_point1]
+            self.offsprings[offspring_index][crossover_point1:crossover_point2] = second_parent[crossover_point1:crossover_point2]
+            self.offsprings[offspring_index][crossover_point2:] = third_parent[crossover_point2:]
 
     def _mutation(self):
         mutants = []
