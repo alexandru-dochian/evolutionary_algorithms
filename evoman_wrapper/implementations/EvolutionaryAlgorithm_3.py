@@ -35,10 +35,15 @@ class EvolutionaryAlgorithm_3(EvolutionaryAlgorithm):
 
         for offspring in self.offsprings:
             mutant = copy(offspring)
-            for genome_index in range(mutant.size):
-                if np.random.uniform(0, 1) <= self.config["mutation_chance"]:
-                    mutant[genome_index] = offspring[genome_index] + np.random.normal(-1, 1)
+            index_1 = random.randrange(len(offspring))
+            index_2 = random.randrange(len(offspring))
+            while(index_2==index_1 and offspring[index_1] != offspring[index_2]):
+                index_2 = random.randrange(len(offspring))
+            
+            temp_variable = offspring[index_1]
+            offspring[index_1] = offspring[index_2]
+            offspring[index_2] = temp_variable
 
             mutants.append(mutant)
-
+        
         self.mutants = np.array(mutants)
