@@ -5,13 +5,15 @@ import random
 
 from evoman_wrapper.interfaces.EvolutionaryAlgorithm import EvolutionaryAlgorithm
 
+#WITH UNIFORM SELECTION, 2 crossover points
+
 
 class EvolutionaryAlgorithm_3(EvolutionaryAlgorithm):
     def __init__(self, config=None):
         super().__init__(config)
 
     def _selection(self):
-        self.parents = super().roulette_wheel_selection(
+        self.parents = super().uniform_selection(
             self.population, self.fitness, self.config["number_of_parents"])
 
     def _crossover(self):
