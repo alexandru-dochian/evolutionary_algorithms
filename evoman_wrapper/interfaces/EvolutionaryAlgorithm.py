@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 import random
-
+import copy
 
 class EvolutionaryAlgorithm(ABC):
     DEFAULT_CONFIG = {
@@ -127,4 +127,44 @@ class EvolutionaryAlgorithm(ABC):
         return np.array(
             [population[np.random.choice(number_of_individuals, p=selection_probabilities)]
              for _ in range(number_of_parents)]
+        )
+    
+    @staticmethod
+    def uniform_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
+        fitness_sum = fitness.sum()
+        if fitness_sum == 0:
+            return np.array([random.choice(population)])
+        
+        population_enhanced = list(zip(population, fitness))
+        # sorting = sorted(population_enhanced, key = lambda x: x[1])
+        selection_probabilities = [1/ len(population) for pair in population_enhanced]
+        number_of_individuals, _ = population.shape
+        return np.array(
+            [population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
+        )
+
+
+    @staticmethod
+    #Rank-based Selection: Linear Ranking parameterised by factor s
+    def LR_selection(s, population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
+        fitness_sum = fitness.sum()
+        if fitness_sum == 0:
+            return np.array([random.choice(population)])
+
+        rank = []
+        for i in range(len(population)):
+            rank.append(i)
+        
+        population_enhanced = list(zip(population, fitness))
+        sorting = sorted(population_enhanced, key = lambda x: x[1])
+        selection_probabilities = []
+
+        for i in range(len(sorting)):
+            prob = ((2-s)/len(population)) + (2*i*(s-1))/(len(population)*(len(population)-1))
+            #prob = (0.5/len(population)) + (i/(len(population)*(len(population)-1)))
+            selection_probabilities.append(prob)
+
+        number_of_individuals, _ = population.shape
+        return np.array(
+            [population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
         )
