@@ -15,7 +15,7 @@ python3 train.py
 ## Test
 
 ```
-python3 train.py
+python3 test.py
 ```
 
 ## Graphs
