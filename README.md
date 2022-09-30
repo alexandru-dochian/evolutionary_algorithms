@@ -27,6 +27,6 @@ Graphs.ipynb
 ## Responsabilities
 
 - [X] Development Operations
-- [ ] Writing EA Algorithms
-- [ ] Generate graphics from training and execution logs
+- [X] Writing EA Algorithms
+- [ ] Generate graphics from training and execution logs (almost done)
 - [ ] Paper related work
