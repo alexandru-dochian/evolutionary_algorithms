@@ -30,8 +30,6 @@ class EvolutionaryAlgorithm_2(EvolutionaryAlgorithm):
             self.offsprings[offspring_index][0:crossover_point1] = first_parent[0:crossover_point1]
             self.offsprings[offspring_index][crossover_point1:crossover_point2] = second_parent[crossover_point1:crossover_point2]
             self.offsprings[offspring_index][crossover_point2:] = third_parent[crossover_point2:]
-    
-    #TODO
 
 
     def _mutation(self):
