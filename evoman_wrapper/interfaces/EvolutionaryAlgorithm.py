@@ -34,6 +34,7 @@ class EvolutionaryAlgorithm(ABC):
     def __init_metrics(self) -> None:
         self.fitness_mean_history = []
         self.fitness_max_history = []
+        self.fitness_min_history = []
 
     def __init_population(self) -> None:
         self.current_generation_number = 0
@@ -72,6 +73,15 @@ class EvolutionaryAlgorithm(ABC):
 
     def update_fitness(self, fitness: np.array):
         # TODO: Normalize fitness instead of just making the negatives 0
+
+        ## if ( max(fitness) - min(fitness)) > 0:
+            ## self.fitness = (self.fitness - min(fitness)) / ( max(fitness) - min(fitness))
+        ## else:
+            ##self.fitness = 0
+
+        ## if self.fitness <= 0:
+            ## self.fitness = 0.000000001
+        
         self.fitness = np.vectorize(lambda x: 0 if x < 0 else x)(fitness)
 
     def next_generation(self):
@@ -108,6 +118,7 @@ class EvolutionaryAlgorithm(ABC):
         self.current_generation_number += 1
         self.fitness_max_history.append(np.max(self.fitness))
         self.fitness_mean_history.append(np.mean(self.fitness))
+        self.fitness_min_history.append(np.min(self.fitness))
         self.best_individual = self.population[np.argmax(self.fitness)]
         self.best_individual_fitness = self.fitness[np.argmax(self.fitness)]
 
@@ -129,19 +140,19 @@ class EvolutionaryAlgorithm(ABC):
              for _ in range(number_of_parents)]
         )
     
-    @staticmethod
-    def uniform_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
-        fitness_sum = fitness.sum()
-        if fitness_sum == 0:
-            return np.array([random.choice(population)])
+    # @staticmethod
+    # def uniform_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
+        # fitness_sum = fitness.sum()
+        # if fitness_sum == 0:
+            # return np.array([random.choice(population)])
         
-        population_enhanced = list(zip(population, fitness))
+        # population_enhanced = list(zip(population, fitness))
         # sorting = sorted(population_enhanced, key = lambda x: x[1])
-        selection_probabilities = [1/ len(population) for pair in population_enhanced]
-        number_of_individuals, _ = population.shape
-        return np.array(
-            [population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
-        )
+        # selection_probabilities = [1/ len(population) for pair in population_enhanced]
+        # number_of_individuals, _ = population.shape
+        # return np.array(
+            # [population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
+        # )
 
 
     @staticmethod
@@ -168,3 +179,23 @@ class EvolutionaryAlgorithm(ABC):
         return np.array(
             [population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
         )
+
+
+
+
+
+    #@staticmethod
+    #def tournament_selection(slef, population: np.array) -> np.array:
+        #parent_population = copy.deepcopy(population)
+        #offspring_population = []
+        #for i in range(len(population)):
+            #parents = []
+            #for u in range(2):
+                #temp_population = []
+                #for j in range(5):
+                    #temp_population.append(random.choice(parent_population))
+                #temp_population.sort(key=lambda x: x.fitness, reverse=False)
+                #parents.append(temp_population[0].ind.copy())
+
+
+
