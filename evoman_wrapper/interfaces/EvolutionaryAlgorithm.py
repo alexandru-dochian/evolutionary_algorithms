@@ -34,6 +34,7 @@ class EvolutionaryAlgorithm(ABC):
     def __init_metrics(self) -> None:
         self.fitness_mean_history = []
         self.fitness_max_history = []
+        self.fitness_min_history = []
 
     def __init_population(self) -> None:
         self.current_generation_number = 0
@@ -72,6 +73,15 @@ class EvolutionaryAlgorithm(ABC):
 
     def update_fitness(self, fitness: np.array):
         # TODO: Normalize fitness instead of just making the negatives 0
+
+        ## if ( max(fitness) - min(fitness)) > 0:
+            ## self.fitness = (self.fitness - min(fitness)) / ( max(fitness) - min(fitness))
+        ## else:
+            ##self.fitness = 0
+
+        ## if self.fitness <= 0:
+            ## self.fitness = 0.000000001
+        
         self.fitness = np.vectorize(lambda x: 0 if x < 0 else x)(fitness)
 
     def next_generation(self):
@@ -108,6 +118,7 @@ class EvolutionaryAlgorithm(ABC):
         self.current_generation_number += 1
         self.fitness_max_history.append(np.max(self.fitness))
         self.fitness_mean_history.append(np.mean(self.fitness))
+        self.fitness_min_history.append(np.min(self.fitness))
         self.best_individual = self.population[np.argmax(self.fitness)]
         self.best_individual_fitness = self.fitness[np.argmax(self.fitness)]
 
@@ -121,6 +132,9 @@ class EvolutionaryAlgorithm(ABC):
         if fitness_sum == 0:
             return np.array([random.choice(population)])
 
+        
+        #population_enhanced = np.stack((population, fitness), axis=1)
+
         population_enhanced = list(zip(population, fitness))
         selection_probabilities = [pair[1] / fitness_sum for pair in population_enhanced]
         number_of_individuals, _ = population.shape
@@ -128,43 +142,77 @@ class EvolutionaryAlgorithm(ABC):
             [population[np.random.choice(number_of_individuals, p=selection_probabilities)]
              for _ in range(number_of_parents)]
         )
-    
+
+    @staticmethod
+    def tournament_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
+
+
+        ind = random.choices(range(len(population)), k = 10)
+        new_fitness = []
+        new_population = []
+        for index in ind:
+            new_population.append(population[index])
+            new_fitness.append(fitness[index])
+        
+        zipped_lists = zip(new_population, new_fitness)
+        sorted_pairs = sorted(zipped_lists, key = lambda x: x[1], reverse=True)
+
+        tuples = zip(*sorted_pairs)
+        new_population, new_fitness = [ list(tuple) for tuple in tuples]
+        
+        selection_probabilities = [1/5]*5
+        parents = new_population[:5]
+        return np.array(
+            [parents[np.random.choice(5, p=selection_probabilities)]]
+        )
+
+   
+    @staticmethod
+    #Rank-based Selection: Linear Ranking parameterised by factor s
+    def LR_selection(s, population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
+        selection_probabilities = []
+        #fitness_sum = fitness.sum()
+        #if fitness_sum == 0:
+            #print("fitness sum = 0")
+            #return np.array([random.choice(population)])
+        
+
+        #population_enhanced = np.stack((population, fitness), axis=1)
+        population_enhanced = list(zip(population, fitness))
+        sorting = sorted(population_enhanced, key = lambda x: x[1])
+
+        #selection_probabilities = [((2-s)/len(population)) + (2*i*(s-1))/(len(population)*(len(population)-1)) for i in range(len(population))]
+        final = list(zip(sorting, selection_probabilities))
+        #print(population_enhanced[0][:])
+        #print(sorting[:][1])
+
+
+        for i in range(len(population)):
+            prob = ((2-s)/len(population)) + (2*i*(s-1))/(len(population)*(len(population)-1))
+            selection_probabilities.append(prob)
+            
+        
+
+        number_of_individuals, _ = population.shape
+        #return np.array(
+            #[population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
+        #)
+        return np.array(
+            [sorting[np.random.choice(number_of_individuals, p = selection_probabilities)][0]]
+        )
+
+
     @staticmethod
     def uniform_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
-        fitness_sum = fitness.sum()
-        if fitness_sum == 0:
-            return np.array([random.choice(population)])
+        #fitness_sum = fitness.sum()
+        #if fitness_sum == 0:
+            #return np.array([random.choice(population)])
         
         population_enhanced = list(zip(population, fitness))
-        # sorting = sorted(population_enhanced, key = lambda x: x[1])
+        sorting = sorted(population_enhanced, key = lambda x: x[1])
         selection_probabilities = [1/ len(population) for pair in population_enhanced]
         number_of_individuals, _ = population.shape
         return np.array(
             [population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
         )
 
-
-    @staticmethod
-    #Rank-based Selection: Linear Ranking parameterised by factor s
-    def LR_selection(s, population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
-        fitness_sum = fitness.sum()
-        if fitness_sum == 0:
-            return np.array([random.choice(population)])
-
-        rank = []
-        for i in range(len(population)):
-            rank.append(i)
-        
-        population_enhanced = list(zip(population, fitness))
-        sorting = sorted(population_enhanced, key = lambda x: x[1])
-        selection_probabilities = []
-
-        for i in range(len(sorting)):
-            prob = ((2-s)/len(population)) + (2*i*(s-1))/(len(population)*(len(population)-1))
-            #prob = (0.5/len(population)) + (i/(len(population)*(len(population)-1)))
-            selection_probabilities.append(prob)
-
-        number_of_individuals, _ = population.shape
-        return np.array(
-            [population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
-        )
