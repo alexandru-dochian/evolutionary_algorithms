@@ -12,8 +12,9 @@ class EvolutionaryAlgorithm_2(EvolutionaryAlgorithm):
         super().__init__(config)
 
     def _selection(self):
-        self.parents = super().LR_selection(
-            1.9, self.population, self.fitness, self.config["number_of_parents"])
+        self.parents = super().tournament_selection(
+             self.population, self.fitness, self.config["number_of_parents"])
+
 
     def _crossover(self):
         number_of_offsprings = self.config["number_of_offsprings"]
@@ -30,22 +31,67 @@ class EvolutionaryAlgorithm_2(EvolutionaryAlgorithm):
             self.offsprings[offspring_index][0:crossover_point1] = first_parent[0:crossover_point1]
             self.offsprings[offspring_index][crossover_point1:crossover_point2] = second_parent[crossover_point1:crossover_point2]
             self.offsprings[offspring_index][crossover_point2:] = third_parent[crossover_point2:]
-
+    
+    #TODO
+    
     def _mutation(self):
         mutants = []
 
         for offspring in self.offsprings:
             mutant = copy(offspring)
-            index_1 = random.randrange(len(offspring))
-            index_2 = random.randrange(len(offspring))
-            while(index_2==index_1 and offspring[index_1] != offspring[index_2]):
-                index_2 = random.randrange(len(offspring))
-            
-            temp_variable = offspring[index_1]
-            offspring[index_1] = offspring[index_2]
-            offspring[index_2] = temp_variable
+            times = 0 
+            first_index = 0
+            second_index = 0 
+            for genome_index in range(mutant.size):
+                if np.random.uniform(0, 1) <= self.config["mutation_chance"]:
+                    times += 1
+                    mutant[genome_index] = offspring[genome_index] + np.random.normal(-1, 1)
+                    if mutant[genome_index] > self.config["distribution_superior_threshold"]:
+                        mutant[genome_index] = self.config["distribution_superior_threshold"]
+                    elif mutant[genome_index] < self.config["distribution_inferior_threshold"]:
+                        mutant[genome_index] = self.config["distribution_inferior_threshold"]
+                if times == 1:
+                    first_index = genome_index
+                elif times == 2:
+                    second_index = genome_index
+                    index = mutant[first_index]
+                    mutant[first_index] = mutant[second_index]
+                    mutant[second_index] = index
+                    break
 
             mutants.append(mutant)
-        
-        self.mutants = np.array(mutants)
 
+        self.mutants = np.array(mutants)
+        #print(self.mutants)
+
+
+    #def _mutation(self):
+        #mutants = []
+
+        #for offspring in self.offsprings:
+            #mutant = copy(offspring)
+            #times = 0 
+            #first_index = 0
+            #second_index = 0 
+            #for genome_index in range(mutant.size):
+                #if np.random.uniform(0, 1) <= self.config["mutation_chance"]:
+                    #times += 1
+                    #mutant[genome_index] = offspring[genome_index] + np.random.normal(-1, 1)
+                    #if mutant[genome_index] > self.config["distribution_superior_threshold"]:
+                        #mutant[genome_index] = self.config["distribution_superior_threshold"]
+                    #elif mutant[genome_index] < self.config["distribution_inferior_threshold"]:
+                        #mutant[genome_index] = self.config["distribution_inferior_threshold"]
+                #if times == 1:
+                    #first_index = genome_index
+                #elif times == 2:
+                    #second_index = genome_index
+                #if times == 2:
+                    #if first_index < second_index:
+                        #mutant[first_index:second_index] = mutant[first_index:second_index][::-1]
+                    #else:
+                        #mutant[second_index:first_index] = mutant[second_index:first_index][::-1]
+                    #break
+
+            #mutants.append(mutant)
+
+        #self.mutants = np.array(mutants)
