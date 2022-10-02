@@ -34,6 +34,7 @@ class EvolutionaryAlgorithm_1(EvolutionaryAlgorithm):
             mutant = copy(offspring)
             for genome_index in range(mutant.size):
                 if np.random.uniform(0, 1) <= self.config["mutation_chance"]:
+
                     mutant[genome_index] = offspring[genome_index] + np.random.normal(-1, 1)
                     if mutant[genome_index] > self.config["distribution_superior_threshold"]:
                         mutant[genome_index] = self.config["distribution_superior_threshold"]
