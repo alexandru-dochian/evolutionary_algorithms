@@ -5,15 +5,16 @@ import random
 
 from evoman_wrapper.interfaces.EvolutionaryAlgorithm import EvolutionaryAlgorithm
 
-#WITH LINEAR RANKING SELECTION PARAMETERISED BY FACTOR s
+#WITH TOURNAMENT PARENT SELECTION
 
 class EvolutionaryAlgorithm_2(EvolutionaryAlgorithm):
     def __init__(self, config=None):
         super().__init__(config)
 
     def _selection(self):
-        self.parents = super().LR_selection(
-            1.9, self.population, self.fitness, self.config["number_of_parents"])
+        self.parents = super().tournament_selection(
+             self.population, self.fitness, self.config["number_of_parents"])
+
 
     def _crossover(self):
         number_of_offsprings = self.config["number_of_offsprings"]
@@ -30,8 +31,10 @@ class EvolutionaryAlgorithm_2(EvolutionaryAlgorithm):
             self.offsprings[offspring_index][0:crossover_point1] = first_parent[0:crossover_point1]
             self.offsprings[offspring_index][crossover_point1:crossover_point2] = second_parent[crossover_point1:crossover_point2]
             self.offsprings[offspring_index][crossover_point2:] = third_parent[crossover_point2:]
+    
+    #TODO
 
-
+    
     def _mutation(self):
         mutants = []
 
@@ -52,13 +55,10 @@ class EvolutionaryAlgorithm_2(EvolutionaryAlgorithm):
                     first_index = genome_index
                 elif times == 2:
                     second_index = genome_index
-                if times == 2:
+                    index = mutant[first_index]
+                    mutant[first_index] = mutant[second_index]
+                    mutant[second_index] = index
                     break
-            
-            if first_index < second_index:
-                mutant[first_index:second_index] = mutant[first_index:second_index][::-1]
-            else:
-                mutant[second_index:first_index] = mutant[second_index:first_index][::-1]
 
             mutants.append(mutant)
 
