@@ -132,6 +132,9 @@ class EvolutionaryAlgorithm(ABC):
         if fitness_sum == 0:
             return np.array([random.choice(population)])
 
+        
+        #population_enhanced = np.stack((population, fitness), axis=1)
+
         population_enhanced = list(zip(population, fitness))
         selection_probabilities = [pair[1] / fitness_sum for pair in population_enhanced]
         number_of_individuals, _ = population.shape
@@ -139,63 +142,83 @@ class EvolutionaryAlgorithm(ABC):
             [population[np.random.choice(number_of_individuals, p=selection_probabilities)]
              for _ in range(number_of_parents)]
         )
-    
-    # @staticmethod
-    # def uniform_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
-        # fitness_sum = fitness.sum()
-        # if fitness_sum == 0:
-            # return np.array([random.choice(population)])
-        
-        # population_enhanced = list(zip(population, fitness))
-        # sorting = sorted(population_enhanced, key = lambda x: x[1])
-        # selection_probabilities = [1/ len(population) for pair in population_enhanced]
-        # number_of_individuals, _ = population.shape
-        # return np.array(
-            # [population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
-        # )
-
 
     @staticmethod
-    #Rank-based Selection: Linear Ranking parameterised by factor s
-    def LR_selection(s, population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
-        fitness_sum = fitness.sum()
-        if fitness_sum == 0:
-            return np.array([random.choice(population)])
+    def tournament_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
 
-        rank = []
-        for i in range(len(population)):
-            rank.append(i)
+
+        ind = random.choices(range(len(population)), k = 10)
+        new_fitness = []
+        new_population = []
+        for index in ind:
+            new_population.append(population[index])
+            new_fitness.append(fitness[index])
         
-        population_enhanced = list(zip(population, fitness))
-        sorting = sorted(population_enhanced, key = lambda x: x[1])
-        selection_probabilities = []
+        zipped_lists = zip(new_population, new_fitness)
+        sorted_pairs = sorted(zipped_lists, key = lambda x: x[1], reverse=True)
 
-        for i in range(len(sorting)):
-            prob = ((2-s)/len(population)) + (2*i*(s-1))/(len(population)*(len(population)-1))
-            #prob = (0.5/len(population)) + (i/(len(population)*(len(population)-1)))
-            selection_probabilities.append(prob)
-
-        number_of_individuals, _ = population.shape
+        tuples = zip(*sorted_pairs)
+        new_population, new_fitness = [ list(tuple) for tuple in tuples]
+        
+        selection_probabilities = [1/5]*5
+        parents = new_population[:5]
         return np.array(
-            [population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
+            [parents[np.random.choice(5, p=selection_probabilities)]]
         )
 
+   
+    #@staticmethod
+    #Rank-based Selection: Linear Ranking parameterised by factor s
+    #def LR_selection(s, population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
+        #selection_probabilities = []
+        #fitness_sum = fitness.sum()
+        #if fitness_sum == 0:
+            #print("fitness sum = 0")
+            #return np.array([random.choice(population)])
+        
+
+        #population_enhanced = np.stack((population, fitness), axis=1)
+        #population_enhanced = list(zip(population, fitness))
+        #sorting = sorted(population_enhanced, key = lambda x: x[1])
+
+        #selection_probabilities = [((2-s)/len(population)) + (2*i*(s-1))/(len(population)*(len(population)-1)) for i in range(len(population))]
+        #final = list(zip(sorting, selection_probabilities))
+        #print(population_enhanced[0][:])
+        #print(sorting[:][1])
 
 
+        #for i in range(len(population)):
+            #prob = ((2-s)/len(population)) + (2*i*(s-1))/(len(population)*(len(population)-1))
+            #selection_probabilities.append(prob)
+            
+        
+
+        #number_of_individuals, _ = population.shape
+        #return np.array(
+            #[population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
+        #)
+        #return np.array(
+            #[sorting[np.random.choice(number_of_individuals, p = selection_probabilities)][0]]
+        #)
 
 
     #@staticmethod
-    #def tournament_selection(slef, population: np.array) -> np.array:
-        #parent_population = copy.deepcopy(population)
-        #offspring_population = []
-        #for i in range(len(population)):
-            #parents = []
-            #for u in range(2):
-                #temp_population = []
-                #for j in range(5):
-                    #temp_population.append(random.choice(parent_population))
-                #temp_population.sort(key=lambda x: x.fitness, reverse=False)
-                #parents.append(temp_population[0].ind.copy())
+    #def uniform_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
+        #fitness_sum = fitness.sum()
+        #if fitness_sum == 0:
+            #return np.array([random.choice(population)])
+        
+        #population_enhanced = list(zip(population, fitness))
+        #sorting = sorted(population_enhanced, key = lambda x: x[1])
+        #selection_probabilities = [1/ len(population) for pair in population_enhanced]
+        #number_of_individuals, _ = population.shape
+        #return np.array(
+            #[population[np.random.choice(number_of_individuals, p=selection_probabilities)]]
+        #)
+
+
+
+
 
 
 
