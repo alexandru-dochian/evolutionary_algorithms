@@ -1,9 +1,19 @@
+import os
+
 from evoman_wrapper.EvomanWrapper import EvomanWrapper
+
+"""
+0. Removing video
+"""
+headless = True
+if headless:
+    os.environ["SDL_VIDEODRIVER"] = "dummy"
+
 
 """
 1. Setup config
 """
-EXPERIMENT_NAME = "SignalEAGroupA"
+EXPERIMENT_NAME = "SignalEA_GroupA_HighFrequencyMutationSignal"
 hidden_layers = 10
 number_of_sensors = 20
 
@@ -12,7 +22,7 @@ config = {
     "hidden_layers": hidden_layers,
     "number_of_sensors": number_of_sensors,
     "experiment_name": EXPERIMENT_NAME,
-    "chosen_generation": 50,
+    "chosen_generation": 1,
     "environment_config": {
         "experiment_name": EXPERIMENT_NAME,
         "enemies": [1, 2, 3],
@@ -20,7 +30,7 @@ config = {
         "playermode": "ai",
         "enemymode": "static",
         "level": 2,
-        "speed": "normal",
+        "speed": "fastest",
         "logs": "off",
         "player_controller": None,
     },
