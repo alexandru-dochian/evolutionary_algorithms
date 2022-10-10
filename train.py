@@ -12,7 +12,7 @@ if headless:
 """
 1. Setup config
 """
-EXPERIMENT_NAME = "SignalEAGroupA"
+EXPERIMENT_NAME = "SignalEA_GroupA_HighFrequencyMutationSignal"
 hidden_layers = 10
 number_of_sensors = 20
 
@@ -46,19 +46,19 @@ config = {
             "number_of_offsprings": 50,
             "max_generations": 500,
             "mutation_chance": 0.2,
-            "mutation_signal": {
+            "mutation_signal_config": {
                 "number_of_sine_functions": 10,
                 "min_frequency": 12,
                 "max_frequency": 35,
                 "min_amplitude": -0.3,
                 "amplitude_range": 0.6
             },
-            "crossover_signal": {
-                    "number_of_sine_functions": 3,
+            "crossover_signal_config": {
+                    "number_of_sine_functions": 10,
                     "min_frequency": 0,
-                    "max_frequency": 10,
-                    "min_amplitude": -1,
-                    "amplitude_range": 2
+                    "max_frequency": 10000,
+                    "min_amplitude": -0.2,
+                    "amplitude_range": 4
             }
         }
     },

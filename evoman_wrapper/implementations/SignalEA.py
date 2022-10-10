@@ -5,22 +5,6 @@ from evoman_wrapper.interfaces.EvolutionaryAlgorithm import EvolutionaryAlgorith
 from evoman_wrapper.utils.ComputationUtils import ComputationUtils
 
 class SignalEA(EvolutionaryAlgorithm):
-    MUTATION_SIGNAL = {
-        "number_of_sine_functions": 10,
-        "min_frequency": 12,
-        "max_frequency": 35,
-        "min_amplitude": -0.3,
-        "amplitude_range": 0.6
-    }
-
-    CROSSOVER_SIGNAL = {
-            "number_of_sine_functions": 3,
-            "min_frequency": 0,
-            "max_frequency": 10,
-            "min_amplitude": -1,
-            "amplitude_range": 2
-    }
-    
     def __init__(self, config=None):
         super().__init__(config)
 
@@ -38,7 +22,7 @@ class SignalEA(EvolutionaryAlgorithm):
             father = random.choice(self.parents)
             
             crossover_signal = ComputationUtils.generate_signal(
-                SignalEA.CROSSOVER_SIGNAL,
+                self.config["crossover_signal_config"],
                 self.config["number_of_genomes"]
             )
             
@@ -54,7 +38,7 @@ class SignalEA(EvolutionaryAlgorithm):
         for individual in np.concatenate([self.parents, self.offsprings]):
              if np.random.uniform(0, 1) <= self.config["mutation_chance"]:
                 mutation_signal = ComputationUtils.generate_signal(
-                    SignalEA.MUTATION_SIGNAL,
+                    self.config["mutation_signal_config"],
                     self.config["number_of_genomes"]
                 )
 
