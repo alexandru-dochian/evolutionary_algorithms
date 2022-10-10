@@ -13,7 +13,7 @@ if headless:
 """
 1. Setup config
 """
-EXPERIMENT_NAME = "SignalEA_GroupA_HighFrequencyMutationSignal"
+EXPERIMENT_NAME = "SignalEAGroupA"
 hidden_layers = 10
 number_of_sensors = 20
 
