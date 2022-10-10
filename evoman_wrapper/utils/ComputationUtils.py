@@ -17,7 +17,7 @@ class ComputationUtils:
 
     @staticmethod
     def generate_signal(signal_config: dict, number_of_points: int):
-        sampling_frequency = number_of_points / 1e3
+        sampling_frequency = 1000
         time_array = np.arange(number_of_points)
         signal = np.zeros(number_of_points)
         
