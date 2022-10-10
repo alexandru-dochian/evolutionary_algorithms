@@ -75,7 +75,7 @@ class EvolutionaryAlgorithm(ABC):
     """
 
     def update_fitness(self, fitness: np.array):
-        self.fitness = np.vectorize(lambda x: ComputationUtils.norm(x, fitness))(fitness)
+        self.fitness = fitness
 
     def next_generation(self):
         if self.current_generation_number > self.config["max_generations"]:
@@ -121,6 +121,7 @@ class EvolutionaryAlgorithm(ABC):
 
     @staticmethod
     def roulette_wheel_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
+        fitness = np.vectorize(lambda x: ComputationUtils.norm(x, fitness))(fitness)
         fitness_sum = fitness.sum()
         if fitness_sum == 0:
             return np.array([random.choice(population)])
@@ -155,3 +156,13 @@ class EvolutionaryAlgorithm(ABC):
         return np.array(
             [parents[np.random.choice(5, p=selection_probabilities)]]
         )
+
+
+    @staticmethod
+    def limit_genome(genome_value , inferior_threshold, superior_threshold):
+        if genome_value > superior_threshold:
+            return superior_threshold
+        elif genome_value < inferior_threshold:
+            return inferior_threshold
+        else:
+            return genome_value

@@ -30,5 +30,4 @@ class ComputationUtils:
             signal += random_signal
 
         signal = np.vectorize(lambda x: ComputationUtils.norm(x, signal))(signal)
-        random_amplitude = random.random() * signal_config["amplitude_range"] + signal_config["min_amplitude"]
         return (signal * signal_config["amplitude_range"]) + signal_config["min_amplitude"]

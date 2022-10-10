@@ -1,17 +1,16 @@
-from copy import copy
 import numpy as np
 import random
 
 from evoman_wrapper.interfaces.EvolutionaryAlgorithm import EvolutionaryAlgorithm
 from evoman_wrapper.utils.ComputationUtils import ComputationUtils
 
-class SignalMutation(EvolutionaryAlgorithm):
+class SignalEA(EvolutionaryAlgorithm):
     MUTATION_SIGNAL = {
         "number_of_sine_functions": 10,
         "min_frequency": 12,
         "max_frequency": 35,
-        "min_amplitude": -0.1,
-        "amplitude_range": 0.2
+        "min_amplitude": -0.3,
+        "amplitude_range": 0.6
     }
 
     CROSSOVER_SIGNAL = {
@@ -39,7 +38,7 @@ class SignalMutation(EvolutionaryAlgorithm):
             father = random.choice(self.parents)
             
             crossover_signal = ComputationUtils.generate_signal(
-                SignalMutation.CROSSOVER_SIGNAL,
+                SignalEA.CROSSOVER_SIGNAL,
                 self.config["number_of_genomes"]
             )
             
@@ -55,9 +54,17 @@ class SignalMutation(EvolutionaryAlgorithm):
         for individual in np.concatenate([self.parents, self.offsprings]):
              if np.random.uniform(0, 1) <= self.config["mutation_chance"]:
                 mutation_signal = ComputationUtils.generate_signal(
-                    SignalMutation.MUTATION_SIGNAL,
+                    SignalEA.MUTATION_SIGNAL,
                     self.config["number_of_genomes"]
                 )
-                mutants.append(np.multiply(individual, mutation_signal))
+
+                mutant = np.multiply(individual, mutation_signal)
+                inferior_threshold = self.config["distribution_inferior_threshold"]
+                superior_threshold = self.config["distribution_superior_threshold"]
+                mutant_limited_to_boundaries = \
+                    np.vectorize(lambda genome_value: \
+                        EvolutionaryAlgorithm.limit_genome(genome_value, inferior_threshold, superior_threshold)
+                    )(mutant)
+                mutants.append(mutant_limited_to_boundaries)
         
         self.mutants = np.array(mutants)
