@@ -1,1 +1,12 @@
 *.pyc 
+
+# Jupyter files
+Garbage.ipynb
+
+# Python files
+train_low_frequency.py
+train_high_frequency.py
+
+# Experiment folders
+LowFrequency
+HighFrequency
