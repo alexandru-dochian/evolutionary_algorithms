@@ -17,7 +17,7 @@ class ComputationUtils:
 
     @staticmethod
     def generate_signal(signal_config: dict, number_of_points: int):
-        sampling_frequency = number_of_points
+        sampling_frequency = 1000
         time_array = np.arange(number_of_points)
         signal = np.zeros(number_of_points)
 
@@ -27,7 +27,8 @@ class ComputationUtils:
             signal_frequency = int(random.random() * frequency_range + signal_config["min_frequency"])
             random_signal = np.sin(random_starting_phase + signal_frequency / sampling_frequency * time_array)
 
+            random_signal = np.vectorize(lambda x: ComputationUtils.norm(x, random_signal))(random_signal)
+            random_signal = (random_signal * signal_config["amplitude_range"]) + signal_config["min_amplitude"]
             signal += random_signal
 
-        signal = np.vectorize(lambda x: ComputationUtils.norm(x, signal))(signal)
-        return (signal * signal_config["amplitude_range"]) + signal_config["min_amplitude"]
+        return signal

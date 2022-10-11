@@ -5,8 +5,8 @@ Garbage.ipynb
 
 # Python files
 train_low_frequency.py
-train_high_frequency.py
+train_cool_frequency.py
 
 # Experiment folders
 LowFrequency
-HighFrequency
+CoolFrequency

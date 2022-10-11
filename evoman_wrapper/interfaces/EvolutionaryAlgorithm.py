@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 import numpy as np
 import random
-import copy
 
 from evoman_wrapper.utils.ComputationUtils import ComputationUtils
 
@@ -23,7 +22,6 @@ class EvolutionaryAlgorithm(ABC):
     def __init__(self, config):
         self.__init_config(config)
         self.__init_metrics()
-        self.__init_population()
 
     def __init_config(self, config: dict = None) -> None:
         self.config = EvolutionaryAlgorithm.DEFAULT_CONFIG
@@ -36,20 +34,6 @@ class EvolutionaryAlgorithm(ABC):
         self.fitness_mean_history = []
         self.fitness_max_history = []
         self.fitness_min_history = []
-
-    def __init_population(self) -> None:
-        population_size = self.config["number_of_parents"] + self.config["number_of_offsprings"]
-
-        self.current_generation_number = 0
-        self.population = np.random.uniform(
-            self.config["distribution_inferior_threshold"],
-            self.config["distribution_superior_threshold"],
-            (population_size, self.config["number_of_genomes"]))
-        self.fitness = np.zeros(population_size)
-        self.best_individual = random.choice(self.population)
-        self.best_individual_fitness = 0
-        self.offsprings = np.array([])
-        self.mutants = np.array([])
 
     """
         Abstract methods
@@ -99,6 +83,29 @@ class EvolutionaryAlgorithm(ABC):
             "fitness_mean_history": self.fitness_mean_history
         }
 
+    def dump_state(self):
+        return {
+            "population": self.population,
+            "current_generation_number": self.current_generation_number
+        }
+
+    def load_state(self, state = None):
+        if state is None:
+            self.current_generation_number = 0
+            self.population = np.random.uniform(
+                self.config["distribution_inferior_threshold"],
+                self.config["distribution_superior_threshold"],
+                (self.config["number_of_parents"] + self.config["number_of_offsprings"], self.config["number_of_genomes"]))
+        else:
+            self.population = state["population"]
+            self.current_generation_number = state["current_generation_number"]
+
+        self.fitness = np.zeros(self.population.size)
+        self.best_individual = random.choice(self.population)
+        self.best_individual_fitness = 0
+        self.offsprings = np.array([])
+        self.mutants = np.array([])
+    
     """
         Private
     """

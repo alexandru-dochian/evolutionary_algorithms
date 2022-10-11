@@ -1,4 +1,5 @@
 import sys, os
+from datetime import datetime
 import pathlib
 import numpy as np
 from pathlib import Path
@@ -50,11 +51,13 @@ class EvomanWrapper:
     """
 
     def train(self):
+        self.__load_state()
         while not self.evolutionary_algorithm.finished_evolving():
             fitness = self.__compute_fitness(self.evolutionary_algorithm.population)
             self.evolutionary_algorithm.update_fitness(fitness)
             self.evolutionary_algorithm.next_generation()
             self.__log_generation()
+            self.__dump_state()
 
     def test(self):
         test_result = {"games": [], "chosen_individual_overview": None}
@@ -111,6 +114,27 @@ class EvomanWrapper:
 
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
+
+    def __dump_state(self):
+        state = self.evolutionary_algorithm.dump_state()
+        
+        final_file_path = "{}/train/dump.json".format(self.environment.experiment_name)
+        DiskUtils.store(pathlib.Path(final_file_path).resolve(), state)
+
+    def __load_state(self):
+        state = None
+        try:
+            final_file_path = "{}/train/dump.json".format(self.environment.experiment_name)
+            state = DiskUtils.load(pathlib.Path(final_file_path).resolve())
+            self.__log("Starting with population from latest dumped generation!")
+        except FileNotFoundError:
+            self.__log("Initializing population from first generation!")
+
+        self.evolutionary_algorithm.load_state(state)     
+
+    def __log(self, message):
+        time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        print("{} LOG> {}".format(time, message))
 
     def __log_simulation(self, individual_index, simulation_fitness, player_energy, enemy_energy, time_lapsed):
         simulation_log = {
