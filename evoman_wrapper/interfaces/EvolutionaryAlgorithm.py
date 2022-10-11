@@ -104,8 +104,8 @@ class EvolutionaryAlgorithm(ABC):
     """
 
     def __override_previous_population(self):
-        self.population = np.concatenate([self.parents, self.offsprings, self.mutants])
         self.__update_metrics()
+        self.population = np.concatenate([self.parents, self.offsprings, self.mutants])
 
     def __update_metrics(self) -> None:
         self.current_generation_number += 1
@@ -136,8 +136,8 @@ class EvolutionaryAlgorithm(ABC):
 
     @staticmethod
     def tournament_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
-
-
+        fitness = np.vectorize(lambda x: ComputationUtils.norm(x, fitness))(fitness)
+        
         ind = random.choices(range(len(population)), k = 10)
         new_fitness = []
         new_population = []

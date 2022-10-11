@@ -35,13 +35,15 @@ class SignalEA(EvolutionaryAlgorithm):
     def _mutation(self):
         mutants = []
 
-        for individual in np.concatenate([self.parents, self.offsprings]):
+        individual_pool = np.concatenate([self.parents, self.offsprings])
+        for _ in range(self.config["number_of_mutants"]):
              if np.random.uniform(0, 1) <= self.config["mutation_chance"]:
                 mutation_signal = ComputationUtils.generate_signal(
                     self.config["mutation_signal_config"],
                     self.config["number_of_genomes"]
                 )
 
+                individual = random.choice(individual_pool)
                 mutant = np.multiply(individual, mutation_signal)
                 inferior_threshold = self.config["distribution_inferior_threshold"]
                 superior_threshold = self.config["distribution_superior_threshold"]

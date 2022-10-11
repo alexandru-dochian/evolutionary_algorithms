@@ -17,10 +17,10 @@ class ComputationUtils:
 
     @staticmethod
     def generate_signal(signal_config: dict, number_of_points: int):
-        sampling_frequency = 1000
+        sampling_frequency = number_of_points
         time_array = np.arange(number_of_points)
         signal = np.zeros(number_of_points)
-        
+
         frequency_range = signal_config["max_frequency"] - signal_config["min_frequency"]
         for _ in range(signal_config["number_of_sine_functions"]):
             random_starting_phase = random.random() * 2 * np.pi

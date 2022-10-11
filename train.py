@@ -42,21 +42,22 @@ config = {
         "instance": "SignalEA",
         "constructor": {
             "number_of_genomes": (number_of_sensors + 1) * hidden_layers + (hidden_layers + 1) * 5,
-            "number_of_parents": 25,
+            "number_of_parents": 50,
             "number_of_offsprings": 50,
+            "number_of_mutants": 100,
             "max_generations": 500,
-            "mutation_chance": 0.2,
+            "mutation_chance": 0.5,
             "mutation_signal_config": {
                 "number_of_sine_functions": 10,
                 "min_frequency": 0,
-                "max_frequency": 100,
+                "max_frequency": 70,
                 "min_amplitude": -0.1,
                 "amplitude_range": 0.2
             },
             "crossover_signal_config": {
-                    "number_of_sine_functions": 2,
+                    "number_of_sine_functions": 3,
                     "min_frequency": 0,
-                    "max_frequency": 50,
+                    "max_frequency": 10,
                     "min_amplitude": -1,
                     "amplitude_range": 2
             }
