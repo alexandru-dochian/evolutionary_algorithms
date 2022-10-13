@@ -44,7 +44,7 @@ class SignalEA(EvolutionaryAlgorithm):
                 )
 
                 individual = random.choice(individual_pool)
-                mutant = np.multiply(individual, mutation_signal)
+                mutant = individual + mutation_signal
                 inferior_threshold = self.config["distribution_inferior_threshold"]
                 superior_threshold = self.config["distribution_superior_threshold"]
                 mutant_limited_to_boundaries = \

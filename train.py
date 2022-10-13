@@ -12,7 +12,7 @@ if headless:
 """
 1. Setup config
 """
-EXPERIMENT_NAME = "LowFrequency"
+EXPERIMENT_NAME = "HighFrequency"
 hidden_layers = 10
 number_of_sensors = 20
 
@@ -48,16 +48,16 @@ config = {
             "max_generations": 100,
             "mutation_chance": 0.5,
             "mutation_signal_config": {
-                "number_of_sine_functions": 10,
+                "number_of_sine_functions": 5,
                 "min_frequency": 400,
                 "max_frequency": 500,
-                "min_amplitude": -0.01,
-                "amplitude_range": 0.02
+                "min_amplitude": -0.1,
+                "amplitude_range": 0.2
             },
             "crossover_signal_config": {
                 "number_of_sine_functions": 10,
                 "min_frequency": 0,
-                "max_frequency": 500,
+                "max_frequency": 50,
                 "min_amplitude": -0.01,
                 "amplitude_range": 0.02
             }
