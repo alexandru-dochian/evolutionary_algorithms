@@ -28,9 +28,9 @@ python3 test.py
 - Performance/Graphs
 
 
-10x experiments of group1 with EA3
-10x experiments of group1 with EA4
-10x experiments of group2 with EA3
-10x experimetns of group2 with EA4
+- 10x experiments of group1 with EA3
+- 10x experiments of group1 with EA4
+- 10x experiments of group2 with EA3
+- 10x experimetns of group2 with EA4
 
 40x experiments in total
