@@ -42,10 +42,10 @@ config = {
         "instance": "SignalEA",
         "constructor": {
             "number_of_genomes": (number_of_sensors + 1) * hidden_layers + (hidden_layers + 1) * 5,
-            "number_of_parents": 5,
-            "number_of_offsprings": 5,
-            "number_of_mutants": 5,
-            "max_generations": 500,
+            "number_of_parents": 25,
+            "number_of_offsprings": 25,
+            "number_of_mutants": 25,
+            "max_generations": 100,
             "mutation_chance": 0.5,
             "mutation_signal_config": {
                 "number_of_sine_functions": 10,
