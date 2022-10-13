@@ -26,3 +26,11 @@ python3 test.py
 - [x] Normalization of simulation fitness (to avoid negative values set to 0)
 - Test algorithms with multiple enemies at once
 - Performance/Graphs
+
+
+10x experiments of group1 with EA3
+10x experiments of group1 with EA4
+10x experiments of group2 with EA3
+10x experimetns of group2 with EA4
+
+40x experiments in total
