@@ -164,6 +164,36 @@ class EvolutionaryAlgorithm(ABC):
             [parents[np.random.choice(5, p=selection_probabilities)]]
         )
 
+    @staticmethod
+    #Rank-based Selection: Linear Ranking parameterised by factor s
+    def LR_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
+        #selection_probabilities = []
+        fitness_sum = fitness.sum()
+        if fitness_sum == 0:
+            #print("fitness sum = 0")
+            return np.array([random.choice(population)])
+        
+        #Compute ranking
+        ranking = [sorted(fitness).index(x) for x in fitness]
+        population_enhanced = list(zip(population, ranking))
+        population_enhanced = sorted(population_enhanced, key = lambda item: item[1])
+
+
+        #Get the selection probabilities
+        s = 1.9
+        population_size = len(population)
+        probability_first_part = (2-s) / population_size
+        probability_second_part = lambda rank_index : 2 * rank_index * (s-1) / (population_size * (population_size - 1))
+        selection_probabilities = np.array([probability_first_part + probability_second_part(rank_index) for rank_index in range(len(ranking))])
+            
+        
+
+        number_of_individuals, _ = population.shape
+
+        return np.array(
+            [population[np.random.choice(number_of_individuals, p = selection_probabilities)]]
+        )    
+
 
     @staticmethod
     def limit_genome(genome_value , inferior_threshold, superior_threshold):
