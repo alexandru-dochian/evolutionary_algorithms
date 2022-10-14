@@ -13,7 +13,7 @@ if headless:
 """
 1. Setup config
 """
-EXPERIMENT_NAME = "HighFrequency"
+EXPERIMENT_NAME = "FullSpectrum"
 hidden_layers = 10
 number_of_sensors = 20
 
@@ -22,7 +22,7 @@ config = {
     "hidden_layers": hidden_layers,
     "number_of_sensors": number_of_sensors,
     "experiment_name": EXPERIMENT_NAME,
-    "chosen_generation": 100,
+    "chosen_generation": 25,
     "environment_config": {
         "experiment_name": EXPERIMENT_NAME,
         "enemies": [1, 2, 3],

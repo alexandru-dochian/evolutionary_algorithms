@@ -12,7 +12,7 @@ if headless:
 """
 1. Setup config
 """
-EXPERIMENT_NAME = "HighFrequency"
+EXPERIMENT_NAME = "FullSpectrum"
 hidden_layers = 10
 number_of_sensors = 20
 
@@ -42,22 +42,22 @@ config = {
         "instance": "SignalEA",
         "constructor": {
             "number_of_genomes": (number_of_sensors + 1) * hidden_layers + (hidden_layers + 1) * 5,
-            "number_of_parents": 25,
-            "number_of_offsprings": 25,
-            "number_of_mutants": 25,
-            "max_generations": 100,
+            "number_of_parents": 10,
+            "number_of_offsprings": 10,
+            "number_of_mutants": 10,
+            "max_generations": 25,
             "mutation_chance": 0.5,
             "mutation_signal_config": {
-                "number_of_sine_functions": 5,
-                "min_frequency": 400,
+                "number_of_sine_functions": 100,
+                "min_frequency": 0,
                 "max_frequency": 500,
-                "min_amplitude": -0.1,
-                "amplitude_range": 0.2
+                "min_amplitude": -0.01,
+                "amplitude_range": 0.02
             },
             "crossover_signal_config": {
-                "number_of_sine_functions": 10,
+                "number_of_sine_functions": 100,
                 "min_frequency": 0,
-                "max_frequency": 50,
+                "max_frequency": 500,
                 "min_amplitude": -0.01,
                 "amplitude_range": 0.02
             }
