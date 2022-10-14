@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from contextlib import nullcontext
 import numpy as np
 import random
 
@@ -141,33 +142,36 @@ class EvolutionaryAlgorithm(ABC):
              for _ in range(number_of_parents)]
         )
 
+    
     @staticmethod
     def tournament_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
-        fitness = np.vectorize(lambda x: ComputationUtils.norm(x, fitness))(fitness)
-        
-        ind = random.choices(range(len(population)), k = 10)
-        new_fitness = []
-        new_population = []
-        for index in ind:
-            new_population.append(population[index])
-            new_fitness.append(fitness[index])
-        
-        zipped_lists = zip(new_population, new_fitness)
-        sorted_pairs = sorted(zipped_lists, key = lambda x: x[1], reverse=True)
+        population_size = len(population)
+        firstind = random.randint(0, population_size-1)
+        firstfitness = fitness[firstind]
+        secondfitness = -1000
+        secondind = 0
+        for i in range(1, 9):
+            ind = random.randint(0,population_size-1)
+            if fitness[ind] > firstfitness:
+                tempfitness = firstfitness
+                tempind = firstind
+                firstind = ind
+                firstfitness = fitness[ind]
+                if secondfitness > -1000:
+                    secondfitness = tempfitness
+                    secondind = tempind
+            elif fitness[ind] > secondfitness:
+                secondfitness = fitness[ind]
+                secondind = ind
+        return population[firstind], population[secondind]
 
-        tuples = zip(*sorted_pairs)
-        new_population, new_fitness = [ list(tuple) for tuple in tuples]
-        
-        selection_probabilities = [1/5]*5
-        parents = new_population[:5]
-        return np.array(
-            [parents[np.random.choice(5, p=selection_probabilities)]]
-        )
+
 
     @staticmethod
     #Rank-based Selection: Linear Ranking parameterised by factor s
     def LR_selection(population: np.array, fitness: np.array, number_of_parents: int) -> np.array:
-        #selection_probabilities = []
+        
+        fitness = np.vectorize(lambda x: ComputationUtils.norm(x, fitness))(fitness)
         fitness_sum = fitness.sum()
         if fitness_sum == 0:
             #print("fitness sum = 0")
@@ -191,7 +195,8 @@ class EvolutionaryAlgorithm(ABC):
         number_of_individuals, _ = population.shape
 
         return np.array(
-            [population[np.random.choice(number_of_individuals, p = selection_probabilities)]]
+            [population[np.random.choice(number_of_individuals, p = selection_probabilities)]
+             for _ in range(number_of_parents)]
         )    
 
 
