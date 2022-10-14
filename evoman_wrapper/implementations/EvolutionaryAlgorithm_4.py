@@ -8,29 +8,52 @@ class EvolutionaryAlgorithm_4(EvolutionaryAlgorithm):
     def __init__(self, config=None):
         super().__init__(config)
 
-    
     def _selection(self):
-        self.parents = super().LR_selection(
-             self.population, self.fitness, self.config["number_of_parents"])    
+        mother, father = super().tournament_selection(self.population, self.fitness, self.config["number_of_parents"])
+
+    
+    #def _selection(self):
+        #self.parents = super().LR_selection(
+             #self.population, self.fitness, self.config["number_of_parents"])    
 
     def _crossover(self):
         number_of_offsprings = self.config["number_of_offsprings"]
         self.offsprings = np.zeros((number_of_offsprings, self.config["number_of_genomes"]))
-
+        self.parents = []
         for offspring_index in range(number_of_offsprings):
-            mother = random.choice(self.parents)
-            father = random.choice(self.parents)
-            
+            mother, father = super().tournament_selection(self.population, self.fitness, self.config["number_of_parents"])
+            self.parents.append(mother)
+            self.parents.append(father)
+
             crossover_signal = ComputationUtils.generate_signal(
                 self.config["crossover_signal_config"],
                 self.config["number_of_genomes"]
             )
-            
+
             for genome_index in range(crossover_signal.size):
                 if crossover_signal[genome_index] > 0:
                     self.offsprings[offspring_index][genome_index] = mother[genome_index]
                 else:
                     self.offsprings[offspring_index][genome_index] = father[genome_index]
+
+    #def _crossover(self):
+        #number_of_offsprings = self.config["number_of_offsprings"]
+        #self.offsprings = np.zeros((number_of_offsprings, self.config["number_of_genomes"]))
+
+        #for offspring_index in range(number_of_offsprings):
+            #mother = random.choice(self.parents)
+            #father = random.choice(self.parents)
+            
+            #crossover_signal = ComputationUtils.generate_signal(
+                #self.config["crossover_signal_config"],
+                #self.config["number_of_genomes"]
+            #)
+            
+            #for genome_index in range(crossover_signal.size):
+                #if crossover_signal[genome_index] > 0:
+                    #self.offsprings[offspring_index][genome_index] = mother[genome_index]
+                #else:
+                    #self.offsprings[offspring_index][genome_index] = father[genome_index]
 
     def _mutation(self):
         mutants = []
@@ -55,3 +78,4 @@ class EvolutionaryAlgorithm_4(EvolutionaryAlgorithm):
                 mutants.append(mutant_limited_to_boundaries)
         
         self.mutants = np.array(mutants)
+
